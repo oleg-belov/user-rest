@@ -1,13 +1,14 @@
 package com.user.rest.test;
 
+import com.user.rest.entity.Response;
 import com.user.rest.entity.User;
 import org.junit.Test;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.springframework.http.HttpStatus.CREATED;
 
 /**
  * Created by sergey on 06.09.15.
@@ -20,23 +21,22 @@ public class TestUserController {
 
     @Test
     public void shouldBeGreetingMessageAtStart() {
-        String msg = restTemplate.getForObject(MAIN_URL, String.class);
-        assertEquals(msg, "Greetings from User Rest!");
+        ResponseEntity<String> response = restTemplate.getForEntity(MAIN_URL, String.class);
+        assertThat(response.getBody(), equalTo("{\"message\":\"Greetings from User Rest!\"}"));
     }
 
     @Test
     public void shouldBeAtLeastOneUserAtStart() {
-        User[] forNow = restTemplate.getForObject(MAIN_URL + "users", User[].class);
-        List<User> users = Arrays.asList(forNow);
-        assertEquals(1, users.size());
-        assertEquals("ADMIN", users.get(0).getName());
+        User[] response = restTemplate.getForObject(MAIN_URL + "users", User[].class);
+        assertThat(response, arrayWithSize(greaterThanOrEqualTo(1)));
     }
 
     @Test
     public void shouldAddNewUser() {
         User user = new User();
-        user.setName("Ivan");
-        String response = restTemplate.postForObject(MAIN_URL + "users", user, String.class);
-        assertEquals("1", response);
+        user.setName("Dmytro");
+        Response response = restTemplate.postForObject(MAIN_URL + "users", user, Response.class);
+        assertThat(response.getStatus(), is(CREATED));
+        assertThat(response.getUser().getName(), equalTo(user.getName()));
     }
 }

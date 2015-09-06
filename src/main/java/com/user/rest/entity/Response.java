@@ -12,11 +12,12 @@ public class Response {
     HttpStatus status;
     User user;
 
+    public Response() {
+    }
+
     public Response(HttpStatus status) {
         this.status = status;
     }
-
-
 
     public HttpStatus getStatus() {
         return status;

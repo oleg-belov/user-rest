@@ -27,6 +27,9 @@ public class UserController {
 
     @RequestMapping(value = "users/user1")
     public User getUser(@RequestParam("id") long id) {
+        if(id <= 0){
+            throw new IllegalArgumentException("Id is less that 0");
+        }
         return userRepository.getUser(id);
     }
 
