@@ -30,16 +30,25 @@ public class UserRepository {
         return jdbc.query("SELECT * FROM sc_user", userMapper);
     }
 
-    public int insert(User user) {
-        return jdbc.update("INSERT INTO sc_user VALUES(?,?)", counter.incrementAndGet(),user.getName());
+    public int insert(final User user) {
+        int id = counter.incrementAndGet();
+        jdbc.update("INSERT INTO sc_user VALUES(?,?)", id, user.getName());
+        return id;
+    }
+
+    public int update(User user, String name) {
+        return jdbc.update("UPDATE sc_user SET name = ? WHERE id = ? ", name, user.getUid());
+    }
+
+    public int delete(User user) {
+        return jdbc.update("DELETE FROM sc_user WHERE id= ?", user.getUid());
     }
 
     private static final RowMapper<User> userMapper = new RowMapper<User>() {
         public User mapRow(ResultSet rs, int rowNum) throws SQLException {
-            User user = new User(rs.getString("name"),rs.getLong("id"));
+            User user = new User(rs.getString("name"), rs.getLong("id"));
             return user;
         }
     };
-
 
 }

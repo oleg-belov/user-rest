@@ -14,7 +14,6 @@ import static org.junit.Assert.assertEquals;
  */
 public class TestUserController {
 
-
     RestTemplate restTemplate = new RestTemplate();
 
     private static final String MAIN_URL = "http://localhost:8080/api/v1/";
@@ -31,5 +30,13 @@ public class TestUserController {
         List<User> users = Arrays.asList(forNow);
         assertEquals(1, users.size());
         assertEquals("ADMIN", users.get(0).getName());
+    }
+
+    @Test
+    public void shouldAddNewUser() {
+        User user = new User();
+        user.setName("Ivan");
+        String response = restTemplate.postForObject(MAIN_URL + "users", user, String.class);
+        assertEquals("1", response);
     }
 }
