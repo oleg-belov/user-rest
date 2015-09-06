@@ -1,16 +1,12 @@
 package com.user.rest.controller;
 
 import com.user.rest.entity.User;
-import org.springframework.http.HttpStatus;
+import com.user.rest.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Created by sergey on 05.09.15.
@@ -19,19 +15,22 @@ import java.util.concurrent.atomic.AtomicLong;
 @RequestMapping("/api/v1")
 public class UserController {
 
-    private final AtomicLong counter = new AtomicLong();
+    @Autowired
+    UserRepository userRepository;
 
-    private static List<User> users = new ArrayList<User>();
-
-    @RequestMapping(value = "users",method = RequestMethod.GET)
+    @RequestMapping(value = "users", method = RequestMethod.GET)
     public List<User> users() {
-        return users;
+        return userRepository.getUsers();
     }
 
-    @RequestMapping(value = "users", method = RequestMethod.POST,consumes ="application/json")
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        user.setUid(counter.incrementAndGet());
-        users.add(user);
-        return new ResponseEntity<User>(user, HttpStatus.OK);
+    @RequestMapping(value = "users", method = RequestMethod.POST, produces = "application/json")
+    public ResponseEntity<Integer> createUser(@RequestBody User user) {
+        int number = userRepository.insert(user);
+        return ResponseEntity.ok(number);
+    }
+
+    @RequestMapping(value = "users/user1")
+    public User getUser(@RequestParam("id") long id) {
+        return userRepository.getUser(id);
     }
 }

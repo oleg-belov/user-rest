@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class HelloController {
-    
-    @RequestMapping("/")
+
+    @RequestMapping("/api/v1")
     public String index() {
         return "Greetings from User Rest!";
     }

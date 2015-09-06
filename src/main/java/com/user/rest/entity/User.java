@@ -14,8 +14,9 @@ public class User {
 
     }
 
-    public User(String name) {
+    public User(String name,long uid) {
         this.name = name;
+        this.uid = uid;
     }
 
     public String getName() {
