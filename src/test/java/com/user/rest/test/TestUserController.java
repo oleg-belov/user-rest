@@ -1,5 +1,6 @@
 package com.user.rest.test;
 
+import com.user.rest.entity.Message;
 import com.user.rest.entity.Response;
 import com.user.rest.entity.User;
 import org.junit.Test;
@@ -21,8 +22,8 @@ public class TestUserController {
 
     @Test
     public void shouldBeGreetingMessageAtStart() {
-        ResponseEntity<String> response = restTemplate.getForEntity(MAIN_URL, String.class);
-        assertThat(response.getBody(), equalTo("{\"message\":\"Greetings from User Rest!\"}"));
+        ResponseEntity<Message> response = restTemplate.getForEntity(MAIN_URL, Message.class);
+        assertThat(response.getBody().getMessage(), equalTo("Greetings from User Rest!"));
     }
 
     @Test
