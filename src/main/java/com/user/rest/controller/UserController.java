@@ -27,10 +27,11 @@ public class UserController {
 
     @RequestMapping(value = "users/user1")
     public User getUser(@RequestParam("id") long id) {
-        if(id <= 0){
+        if (id <= 0) {
             throw new IllegalArgumentException("Id is less that 0");
         }
         return userRepository.getUser(id);
+
     }
 
     @RequestMapping(value = "users", method = RequestMethod.POST, produces = "application/json")
