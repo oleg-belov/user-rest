@@ -3,7 +3,6 @@ package com.user.rest.controller;
 import com.user.rest.entity.Response;
 import com.user.rest.entity.User;
 import com.user.rest.repository.UserRepository;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -26,15 +25,18 @@ public class UserController {
     }
 
     @RequestMapping(value = "users/user1")
-    public User getUser(@RequestParam("id") long id) {
+    public Response getUser(@RequestParam("id") long id) {
         if (id <= 0) {
             throw new IllegalArgumentException("Id is less that 0");
         }
-        return userRepository.getUser(id);
+        User user = userRepository.getUser(id);
+        Response response = new Response(HttpStatus.OK);
+        response.setUser(user);
+        return response;
 
     }
 
-    @RequestMapping(value = "users", method = RequestMethod.POST, produces = "application/json")
+    @RequestMapping(value = "users", method = RequestMethod.POST)
     public Response createUser(@RequestBody User user) {
         long insertedId = userRepository.insert(user);
         user.setUid(insertedId);
@@ -44,13 +46,8 @@ public class UserController {
     }
 
     @RequestMapping(value = "users/user1", method = RequestMethod.PUT)
-    public Response updateUser(@RequestParam("id") long id, @RequestParam("name") String name) {
-        if (StringUtils.isBlank(name)) {
-            throw new IllegalArgumentException("Name is empty or null");
-        }
-        User user = getUser(id);
-        userRepository.update(user, name);
-        user.setName(name);
+    public Response updateUser(@RequestParam("id") long id, @RequestBody User user) {
+        userRepository.update(id, user);
         Response response = new Response(HttpStatus.ACCEPTED);
         response.setUser(user);
         return response;
@@ -58,8 +55,7 @@ public class UserController {
 
     @RequestMapping(value = "users/user1", method = RequestMethod.DELETE)
     public Response deleteUser(@RequestParam("id") long id) {
-        User user = getUser(id);
-        int deleted = userRepository.delete(user);
+        userRepository.delete(id);
         return new Response(HttpStatus.OK);
     }
 }

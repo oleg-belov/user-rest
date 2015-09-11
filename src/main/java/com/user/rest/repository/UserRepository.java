@@ -32,21 +32,26 @@ public class UserRepository {
 
     public int insert(final User user) {
         int id = counter.incrementAndGet();
-        jdbc.update("INSERT INTO sc_user VALUES(?,?)", id, user.getName());
+        jdbc.update("INSERT INTO sc_user VALUES(?,?,?,?,?)", id, user.getUsername(), user.getFirstname(), user.getLastname(), user.getEmail());
         return id;
     }
 
-    public int update(User user, String name) {
-        return jdbc.update("UPDATE sc_user SET name = ? WHERE id = ? ", name, user.getUid());
+    public int update(long id, User user) {
+        return jdbc.update("UPDATE sc_user SET user_name=?,first_name=?,last_name=?,email=? WHERE id=?", user.getUsername(), user.getFirstname(), user.getLastname(), user.getEmail(), id);
     }
 
-    public int delete(User user) {
-        return jdbc.update("DELETE FROM sc_user WHERE id= ?", user.getUid());
+    public int delete(long id) {
+        return jdbc.update("DELETE FROM sc_user WHERE id=?", id);
     }
 
     private static final RowMapper<User> userMapper = new RowMapper<User>() {
         public User mapRow(ResultSet rs, int rowNum) throws SQLException {
-            User user = new User(rs.getString("name"), rs.getLong("id"));
+            User user = new User();
+            user.setUid(rs.getLong("id"));
+            user.setUsername(rs.getString("user_name"));
+            user.setFirstname(rs.getString("first_name"));
+            user.setLastname(rs.getString("last_name"));
+            user.setEmail(rs.getString("email"));
             return user;
         }
     };
