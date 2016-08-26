@@ -24,23 +24,28 @@ public class UserController {
         return userRepository.findAll();
     }
 
-    @RequestMapping(value = "users/user")
-    public User getUser(@RequestParam("id") String id) {
+    @RequestMapping(value = "/user/{id}")
+    public User getUser(@PathVariable("id") String id) {
         return userRepository.findOne(id);
     }
 
-    @RequestMapping(value = "users/add", method = RequestMethod.POST)
+    @RequestMapping(value = "user/add", method = RequestMethod.POST)
     public User createUser(@RequestBody User user) {
         return userRepository.save(user);
     }
 
-    @RequestMapping(value = "users/update", method = RequestMethod.PUT)
-    public User updateUser(@RequestBody User user) {
-        return userRepository.save(user);
+    @RequestMapping(value = "user/update/{id}", method = RequestMethod.PUT)
+    public User updateUser(@PathVariable String id,@RequestBody User user) {
+        User dbUser = userRepository.findOne(id);
+        dbUser.setEmail(user.getEmail());
+        dbUser.setFirstname(user.getFirstname());
+        dbUser.setLastname(user.getLastname());
+        dbUser.setUsername(user.getUsername());
+        return userRepository.save(dbUser);
     }
 
-    @RequestMapping(value = "users/user/delete", method = RequestMethod.DELETE)
-    public void deleteUser(@RequestParam("id") String id) {
+    @RequestMapping(value = "/user/delete/{id}", method = RequestMethod.DELETE)
+    public void deleteUser(@PathVariable("id") String id) {
         userRepository.delete(id);
     }
 }
