@@ -13,7 +13,7 @@ import java.util.List;
  * Created by sergey on 05.09.15.
  */
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/rest/")
 public class UserController {
 
     @Autowired
@@ -21,41 +21,26 @@ public class UserController {
 
     @RequestMapping(value = "users", method = RequestMethod.GET)
     public List<User> users() {
-        return userRepository.getUsers();
+        return userRepository.findAll();
     }
 
-    @RequestMapping(value = "users/user1")
-    public Response getUser(@RequestParam("id") long id) {
-        if (id <= 0) {
-            throw new IllegalArgumentException("Id is less that 0");
-        }
-        User user = userRepository.getUser(id);
-        Response response = new Response(HttpStatus.OK);
-        response.setUser(user);
-        return response;
-
+    @RequestMapping(value = "users/user")
+    public User getUser(@RequestParam("id") String id) {
+        return userRepository.findOne(id);
     }
 
-    @RequestMapping(value = "users", method = RequestMethod.POST)
-    public Response createUser(@RequestBody User user) {
-        long insertedId = userRepository.insert(user);
-        user.setUid(insertedId);
-        Response response = new Response(HttpStatus.CREATED);
-        response.setUser(user);
-        return response;
+    @RequestMapping(value = "users/add", method = RequestMethod.POST)
+    public User createUser(@RequestBody User user) {
+        return userRepository.save(user);
     }
 
-    @RequestMapping(value = "users/user1", method = RequestMethod.PUT)
-    public Response updateUser(@RequestParam("id") long id, @RequestBody User user) {
-        userRepository.update(id, user);
-        Response response = new Response(HttpStatus.ACCEPTED);
-        response.setUser(user);
-        return response;
+    @RequestMapping(value = "users/update", method = RequestMethod.PUT)
+    public User updateUser(@RequestBody User user) {
+        return userRepository.save(user);
     }
 
-    @RequestMapping(value = "users/user1", method = RequestMethod.DELETE)
-    public Response deleteUser(@RequestParam("id") long id) {
+    @RequestMapping(value = "users/user/delete", method = RequestMethod.DELETE)
+    public void deleteUser(@RequestParam("id") String id) {
         userRepository.delete(id);
-        return new Response(HttpStatus.OK);
     }
 }

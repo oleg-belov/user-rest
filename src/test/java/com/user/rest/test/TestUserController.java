@@ -17,7 +17,8 @@ import static org.junit.Assert.assertNotNull;
  */
 public class TestUserController {
 
-    RestClient restClient = new RestClient();
+    private RestClient restClient = new RestClient();
+
 
     @Test
     public void shouldBeGreetingMessageAtStart() {
