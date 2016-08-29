@@ -1,10 +1,8 @@
 package com.user.rest.controller;
 
-import com.user.rest.entity.Response;
 import com.user.rest.entity.User;
 import com.user.rest.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,12 +33,20 @@ public class UserController {
     }
 
     @RequestMapping(value = "user/update/{id}", method = RequestMethod.PUT)
-    public User updateUser(@PathVariable String id,@RequestBody User user) {
+    public User updateUser(@PathVariable String id, @RequestBody User user) {
         User dbUser = userRepository.findOne(id);
-        dbUser.setEmail(user.getEmail());
-        dbUser.setFirstname(user.getFirstname());
-        dbUser.setLastname(user.getLastname());
-        dbUser.setUsername(user.getUsername());
+        if (user.getEmail() != null) {
+            dbUser.setEmail(user.getEmail());
+        }
+        if (user.getFirstname() != null) {
+            dbUser.setFirstname(user.getFirstname());
+        }
+        if (user.getLastname() != null) {
+            dbUser.setLastname(user.getLastname());
+        }
+        if (user.getUsername() != null) {
+            dbUser.setUsername(user.getUsername());
+        }
         return userRepository.save(dbUser);
     }
 
