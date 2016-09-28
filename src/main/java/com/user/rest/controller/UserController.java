@@ -15,7 +15,7 @@ import java.util.List;
 public class UserController {
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @RequestMapping(value = "users", method = RequestMethod.GET)
     public List<User> users() {
