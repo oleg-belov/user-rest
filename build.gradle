@@ -7,9 +7,6 @@ buildscript {
     }
 }
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
 apply plugin: 'spring-boot'
 apply plugin: 'java'
 apply plugin: 'eclipse'
@@ -34,7 +31,14 @@ jar {
     version = '0.1.0'
 }
 
+test {
+    ignoreFailures = true
+    testLogging.exceptionFormat = 'full'
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.3'
+    gradleVersion = '2.9'
 }
