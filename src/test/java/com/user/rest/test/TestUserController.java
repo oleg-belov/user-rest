@@ -1,87 +1,80 @@
 package com.user.rest.test;
 
-import com.user.rest.entity.Message;
-import com.user.rest.entity.Response;
 import com.user.rest.entity.User;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.web.client.HttpServerErrorException;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import java.util.Arrays;
+
+import static com.jayway.restassured.RestAssured.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertFalse;
 
 /**
  * Created by sergey on 06.09.15.
  */
 public class TestUserController {
-//
-//    private RestClient restClient = new RestClient();
-//
-//
-//    @Test
-//    public void shouldBeGreetingMessageAtStart() {
-//        Message response = restClient.getGreetingMessage();
-//        assertThat(response.getMessage(), equalTo("Greetings from User Rest!"));
-//    }
-//
-//    @Test
-//    public void shouldBeAtLeastOneUserAtStart() {
-//        User[] response = restClient.getAllUsers();
-//        assertThat(response, arrayWithSize(greaterThanOrEqualTo(1)));
-//    }
-//
-//    @Test
-//    public void shouldAddNewUser() {
-//        User user = buildUser();
-//        Response response = restClient.createUser(user);
-//        assertResponse(response, user);
-//        response = restClient.getUserById(response.getUser().getUid());
-//        assertResponse(response, user);
-//    }
-//
-//    @Test
-//    public void shouldUpdateUserLastName() {
-//        User user = createUser();
-//        long uid = user.getId();
-//        User newUser = new User();
-//        newUser.setUsername("Misha");
-//        newUser.setLastname("Dirda");
-//        restClient.updateUser(uid, newUser);
-//        Response response = restClient.getUserById(uid);
-//        Assert.assertThat(response.getUser().getLastname(), equalTo(newUser.getLastname()));
-//    }
-//
-//    @Test(expected = HttpServerErrorException.class)
-//    public void shouldDeleteUser() {
-//        long userId = createUser().getUid();
-//        restClient.delete(userId);
-//        restClient.getUserById(userId);
-//    }
-//
-//    private void assertResponse(Response response, User actual) {
-//        assertNotNull(response);
-//        User expected = response.getUser();
-//        assertNotNull(expected);
-//        Assert.assertThat(expected.getUsername(), equalTo(actual.getUsername()));
-//        Assert.assertThat(expected.getFirstname(), equalTo(actual.getFirstname()));
-//        assertEquals(expected.getLastname(), actual.getLastname());
-//        assertEquals(expected.getEmail(), actual.getEmail());
-//    }
-//
-//    private User buildUser() {
-//        User user = new User();
-//        user.setUsername("dima99");
-//        user.setFirstname("Dmytro");
-//        user.setLastname("Dmitriev");
-//        user.setEmail("dima@gmail.com");
-//        return user;
-//    }
-//
-//    private User createUser() {
-//        User user = buildUser();
-//        return restClient.createUser(user).getUser();
-//    }
 
+    @Test
+    public void shouldBeGreetingMessageAtStart() {
+        when().get("/")
+                .then()
+                .body(equalTo("Greetings from User Rest!"));
+    }
+
+    @Test
+    public void shouldAddNewUser() {
+        User user = getTestUser();
+        User saved = addUser(user);
+        assertEquals(user, saved, "id");
+    }
+
+    @Test
+    public void shouldUpdateUserLastName() {
+        User user = getTestUser();
+        User inserted = addUser(user);
+        // update user data
+        inserted.setUsername("Misha");
+        User updated = updateUser(inserted);
+        assertEquals(inserted, updated, "id");
+    }
+
+    @Test
+    public void shouldDeleteUser() {
+        User user = getTestUser();
+        User inserted = addUser(user);
+        delete("/rest/user/delete/{id}", inserted.getId());
+        User[] users = get("/rest/users").getBody().as(User[].class);
+        assertFalse(Arrays.asList(users).contains(inserted));
+    }
+
+    private User addUser(User user) {
+        return given()
+                .contentType("application/json")
+                .body(user)
+                .post("/rest/user/add")
+                .getBody().as(User.class);
+    }
+
+    private User updateUser(User user) {
+        return given()
+                .contentType("application/json")
+                .body(user)
+                .put("/rest/user/update/{id}", user.getId())
+                .getBody().as(User.class);
+    }
+
+    private User getTestUser() {
+        User user = new User();
+        user.setLastname("Ivanov");
+        user.setFirstname("Ivan");
+        user.setEmail("ivanov@gmail.com");
+        user.setUsername("ivan4ik");
+        return user;
+    }
+
+    private static void assertEquals(Object obj1, Object obj2, String... fieldsToIgnore) {
+        Assert.assertThat(obj1 + "\n not equal to " + obj2, EqualsBuilder.reflectionEquals(obj1, obj2, fieldsToIgnore), equalTo(true));
+    }
 }
