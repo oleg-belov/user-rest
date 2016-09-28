@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Configuration;
 public class Application {
 
     public static void main(String[] args) {
-        System.setProperty("spring.data.mongodb.uri", "mongodb://0.0.0.0:27017/micros");
         SpringApplication.run(Application.class, args);
     }
 }
