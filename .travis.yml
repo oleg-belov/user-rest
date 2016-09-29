@@ -12,7 +12,7 @@ script:
   - gradlew clean build
   - docker build -t user-rest .
   - docker run -p 27017:27017 -d --name mongodb mongo
-  - docker run -p 8080:8080 --name user-rest --link mongodb:mongo user-rest
+  - docker run -d -p 8080:8080 --name user-rest --link mongodb:mongo user-rest
   - gradlew clean test
 
 notifications:
