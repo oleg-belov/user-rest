@@ -1,5 +1,7 @@
 == User rest
 
+[![Build Status](https://travis-ci.org/SergeyPirogov/user-rest.svg?branch=master)](https://travis-ci.org/SergeyPirogov/user-rest)
+
 Provide users notebook
 
 Available methods
