@@ -5,7 +5,9 @@ import com.user.rest.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by sergey on 05.09.15.
@@ -28,8 +30,11 @@ public class UserController {
     }
 
     @RequestMapping(value = "user/add", method = RequestMethod.POST)
-    public User createUser(@RequestBody User user) {
-        return userRepository.save(user);
+    public Map<String, String> createUser(@RequestBody User user) {
+        String id = userRepository.save(user).getId();
+        Map<String, String> map = new HashMap<>();
+        map.put("id", id);
+        return map;
     }
 
     @RequestMapping(value = "user/update/{id}", method = RequestMethod.PUT)
