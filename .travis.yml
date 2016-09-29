@@ -1,0 +1,24 @@
+language: java
+jdk:
+  - oraclejdk8
+
+services:
+  - docker
+
+before_install:
+ - chmod +x gradlew
+ - docker build -t user-rest .
+ - docker run -p 27017:27017 -d --name mongodb mongo
+ - docker run -p 8080:8080 --name user-rest --link mongodb:mongo user-rest
+
+script:
+  - gradlew clean test
+
+
+
+notifications:
+  email:
+    recipients:
+      - sergio_89@ukr.net
+    on_success: always
+    on_failure: always
