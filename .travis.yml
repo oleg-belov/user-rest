@@ -14,8 +14,6 @@ before_install:
 script:
   - gradlew clean test
 
-
-
 notifications:
   email:
     recipients:
