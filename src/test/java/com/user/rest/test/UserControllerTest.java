@@ -15,6 +15,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.restdocs.JUnitRestDocumentation;
+import org.springframework.restdocs.restassured.RestDocumentationFilter;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.restdocs.restassured.RestAssuredRestDocumentation;
@@ -26,6 +27,8 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertFalse;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
@@ -43,15 +46,17 @@ public class UserControllerTest {
     public JUnitRestDocumentation restDocumentation =
             new JUnitRestDocumentation("build/generated-snippets");
 
-    @Autowired
-    private UserRepository personRepository;
-
     private RequestSpecification spec;
+
+    private RestDocumentationFilter documentationFilter;
 
     @Before
     public void setUp() {
+        this.documentationFilter = document("{method-name}",
+                preprocessResponse(prettyPrint()));
         this.spec = new RequestSpecBuilder().addFilter(
                 documentationConfiguration(this.restDocumentation))
+                .addFilter(this.documentationFilter)
                 .build();
     }
 
@@ -63,16 +68,17 @@ public class UserControllerTest {
     }
 
     @Test
-    public void getUser(){
-        RestAssured.given(this.spec)
+    public void getUser() {
+        RestAssured
+                .given(this.spec)
                 .accept("application/json")
-                .filter(document("index", responseFields(
+                .filter(document("user", preprocessResponse(prettyPrint()), responseFields(
                         fieldWithPath("[].id").description("The user's contact details"),
                         fieldWithPath("[].username").description("The user's contact details"),
                         fieldWithPath("[].lastname").description("The user's contact details"),
                         fieldWithPath("[].email").description("The user's contact details"),
                         fieldWithPath("[].firstname").description("The user's email address"))))
-                .get("/rest/users")
+                .when().get("/rest/users")
                 .then()
                 .assertThat()
                 .statusCode(equalTo(200));
