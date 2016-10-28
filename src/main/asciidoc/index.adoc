@@ -78,12 +78,12 @@ The Person resource is used to create, modify and list people.
 === Listing people
 A `GET` request lists all of the service's people.
 
-include::{snippets}/list-people/response-fields.adoc[]
+include::{snippets}/user/response-fields.adoc[]
 
 ==== Example request
 
-include::{snippets}/list-people/curl-request.adoc[]
+include::{snippets}/user/curl-request.adoc[]
 
 ==== Example response
 
-include::{snippets}/list-people/http-response.adoc[]
+include::{snippets}/user/http-response.adoc[]

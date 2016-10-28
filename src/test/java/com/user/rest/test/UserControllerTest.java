@@ -66,10 +66,16 @@ public class UserControllerTest {
     public void getUser(){
         RestAssured.given(this.spec)
                 .accept("application/json")
-                .filter(document("user", responseFields(
-                        fieldWithPath("contact").description("The user's contact details"),
-                        fieldWithPath("contact.email").description("The user's email address"))))
-                .get("/users").then().assertThat().statusCode(equalTo(200));
+                .filter(document("index", responseFields(
+                        fieldWithPath("[].id").description("The user's contact details"),
+                        fieldWithPath("[].username").description("The user's contact details"),
+                        fieldWithPath("[].lastname").description("The user's contact details"),
+                        fieldWithPath("[].email").description("The user's contact details"),
+                        fieldWithPath("[].firstname").description("The user's email address"))))
+                .get("/rest/users")
+                .then()
+                .assertThat()
+                .statusCode(equalTo(200));
     }
 
     @Test
