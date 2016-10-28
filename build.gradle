@@ -1,10 +1,17 @@
 buildscript {
+    ext{
+        springRestDocsVersion = '1.0.0.RELEASE'
+    }
     repositories {
         jcenter()
     }
     dependencies {
         classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.2.0.RELEASE'
     }
+}
+
+plugins {
+    id "org.asciidoctor.convert" version "1.5.2"
 }
 
 apply plugin: 'spring-boot'
@@ -23,19 +30,38 @@ dependencies {
     compile('com.jayway.restassured:rest-assured:2.9.0')
     compile group: 'commons-lang', name: 'commons-lang', version: '2.2'
     testCompile("junit:junit")
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+    testCompile("org.springframework.restdocs:spring-restdocs-mockmvc:${springRestDocsVersion}")
 }
 
 
 jar {
     baseName = 'user-rest-service'
     version = '0.1.0'
+    dependsOn asciidoctor
+    from ("${asciidoctor.outputDir}/html5") {
+        into 'static/docs'
+    }
+}
+
+ext {
+    snippetsDir = file('build/generated-snippets')
 }
 
 test {
+    outputs.dir snippetsDir
     testLogging.exceptionFormat = 'full'
     testLogging {
         events "passed", "skipped", "failed"
     }
+}
+
+asciidoctor {
+    attributes 'snippets': snippetsDir
+    inputs.dir snippetsDir
+    outputDir "build/asciidoc"
+    dependsOn test
+    sourceDir 'src/main/asciidoc'
 }
 
 task wrapper(type: Wrapper) {
