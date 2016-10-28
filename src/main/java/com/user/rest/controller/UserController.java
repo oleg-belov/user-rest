@@ -13,7 +13,7 @@ import java.util.Map;
  * Created by sergey on 05.09.15.
  */
 @RestController
-@RequestMapping("/rest/")
+@RequestMapping("/rest")
 public class UserController {
 
     @Autowired
@@ -29,7 +29,7 @@ public class UserController {
         return userRepository.findOne(id);
     }
 
-    @RequestMapping(value = "user/add", method = RequestMethod.POST)
+    @RequestMapping(value = "/user/add", method = RequestMethod.POST)
     public Map<String, String> createUser(@RequestBody User user) {
         String id = userRepository.save(user).getId();
         Map<String, String> map = new HashMap<>();
@@ -37,7 +37,7 @@ public class UserController {
         return map;
     }
 
-    @RequestMapping(value = "user/update/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/user/update/{id}", method = RequestMethod.PUT)
     public User updateUser(@PathVariable String id, @RequestBody User user) {
         User dbUser = userRepository.findOne(id);
         if (user.getEmail() != null) {
