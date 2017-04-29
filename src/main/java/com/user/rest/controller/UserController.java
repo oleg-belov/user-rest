@@ -2,12 +2,11 @@ package com.user.rest.controller;
 
 import com.user.rest.entity.User;
 import com.user.rest.repository.UserRepository;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by sergey on 05.09.15.
@@ -19,22 +18,21 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    @ApiOperation(value = "getAllUsers", response = User[].class)
     @RequestMapping(value = "users", method = RequestMethod.GET)
     public List<User> users() {
         return userRepository.findAll();
     }
 
-    @RequestMapping(value = "/user/{id}")
+
+    @RequestMapping(value = "/user/{id}", method = RequestMethod.GET)
     public User getUser(@PathVariable("id") String id) {
         return userRepository.findOne(id);
     }
 
     @RequestMapping(value = "/user/add", method = RequestMethod.POST)
-    public Map<String, String> createUser(@RequestBody User user) {
-        String id = userRepository.save(user).getId();
-        Map<String, String> map = new HashMap<>();
-        map.put("id", id);
-        return map;
+    public User createUser(@RequestBody User user) {
+        return userRepository.save(user);
     }
 
     @RequestMapping(value = "/user/update/{id}", method = RequestMethod.PUT)

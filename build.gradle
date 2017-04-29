@@ -40,6 +40,9 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-data-mongodb")
     compile('com.jayway.restassured:rest-assured:2.9.0')
     compile group: 'commons-lang', name: 'commons-lang', version: '2.2'
+    compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.6.1'
+    compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.6.1'
+
     testCompile("junit:junit")
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile("org.springframework.restdocs:spring-restdocs-restassured:${springRestDocsVersion}")
