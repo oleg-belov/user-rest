@@ -6,6 +6,9 @@ Provide users notebook
 
 Available methods
 
+http://localhost:8080/swagger-ui.html
+
+
 = Get all users
 
 GET /users

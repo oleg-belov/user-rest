@@ -1,6 +1,6 @@
 mongo:
   image: mongo
-rest:
+user_rest:
   image: user-rest
   links:
     - mongo
