@@ -1,7 +1,7 @@
 mongo:
   image: mongo
 user_rest:
-  image: user-rest
+  image: spirogov/user_rest
   links:
     - mongo
   ports:
